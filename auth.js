@@ -6,10 +6,9 @@ const userModel =require('./model/user')
 passport.use(new localStrategy(async(username,password,done)=>{
     try{
       const userResponse = await userModel.findOne({name:username})
-      console.log(userResponse);
       if(!userResponse)
          return done(null,false,{message:'user not found'})
-      const passwResponse =userResponse.password == password ? true: false
+      const passwResponse = await userResponse.comparePassword(password)
       if(passwResponse)
         return done(null,username)
       else 
